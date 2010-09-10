@@ -16,6 +16,7 @@
 
 package com.android.server.status;
 
+import android.content.res.ThemeIcons;
 import android.provider.Settings;
 import android.util.Slog;
 
@@ -103,7 +104,7 @@ public class IconData {
         IconData data = new IconData();
         data.type = ICON;
         data.slot = slot;
-        data.iconPackage = iconPackage;
+        data.iconPackage = ThemeIcons.getPackage(iconPackage, iconId);
         data.iconId = iconId;
         data.iconLevel = iconLevel;
         data.number = number;
@@ -130,7 +131,7 @@ public class IconData {
         IconData data = new IconData();
         data.type = ICON_NUMBER;
         data.slot = slot;
-        data.iconPackage = iconPackage;
+        data.iconPackage = ThemeIcons.getPackage(iconPackage, iconId);
         data.iconId = iconId;
         data.iconLevel = iconLevel;
         data.number = number;

@@ -37,6 +37,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.content.res.ThemeIcons;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -1619,7 +1620,7 @@ class NotificationManagerService extends INotificationManager.Stub {
 
                     if (mAdbNotification == null) {
                         mAdbNotification = new Notification();
-                        mAdbNotification.icon = com.android.internal.R.drawable.stat_sys_adb;
+                        mAdbNotification.icon = ThemeIcons.ResourceID("stat_sys_adb", com.android.internal.R.drawable.stat_sys_adb);
                         mAdbNotification.when = 0;
                         mAdbNotification.flags = Notification.FLAG_ONGOING_EVENT;
                         mAdbNotification.tickerText = title;

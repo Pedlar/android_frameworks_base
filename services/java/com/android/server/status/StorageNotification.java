@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.ThemeIcons;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -127,7 +128,7 @@ public class StorageNotification extends StorageEventListener {
             setUsbStorageNotification(
                     com.android.internal.R.string.usb_storage_stop_notification_title,
                     com.android.internal.R.string.usb_storage_stop_notification_message,
-                    com.android.internal.R.drawable.stat_sys_warning, false, true, pi);
+                    ThemeIcons.ResourceID("stat_sys_warning", com.android.internal.R.drawable.stat_sys_warning), false, true, pi);
         } else if (newState.equals(Environment.MEDIA_CHECKING)) {
             /*
              * Storage is now checking. Update media notification and disable
@@ -136,7 +137,7 @@ public class StorageNotification extends StorageEventListener {
             setMediaStorageNotification(
                     com.android.internal.R.string.ext_media_checking_notification_title,
                     com.android.internal.R.string.ext_media_checking_notification_message,
-                    com.android.internal.R.drawable.stat_notify_sdcard_prepare, true, false, null);
+                    ThemeIcons.ResourceID("stat_notify_sdcard_prepare", com.android.internal.R.drawable.stat_notify_sdcard_prepare), true, false, null);
             updateUsbMassStorageNotification(false);
         } else if (newState.equals(Environment.MEDIA_MOUNTED)) {
             /*
@@ -167,7 +168,7 @@ public class StorageNotification extends StorageEventListener {
                     setMediaStorageNotification(
                             com.android.internal.R.string.ext_media_safe_unmount_notification_title,
                             com.android.internal.R.string.ext_media_safe_unmount_notification_message,
-                            com.android.internal.R.drawable.stat_notify_sdcard, true, true, null);
+                            ThemeIcons.ResourceID("stat_notify_sdcard", com.android.internal.R.drawable.stat_notify_sdcard), true, true, null);
                     updateUsbMassStorageNotification(mUmsAvailable);
                 }
             } else {
@@ -190,7 +191,7 @@ public class StorageNotification extends StorageEventListener {
             setMediaStorageNotification(
                     com.android.internal.R.string.ext_media_nofs_notification_title,
                     com.android.internal.R.string.ext_media_nofs_notification_message,
-                    com.android.internal.R.drawable.stat_notify_sdcard_usb, true, false, pi);
+                    ThemeIcons.ResourceID("stat_notify_sdcard_usb", com.android.internal.R.drawable.stat_notify_sdcard_usb), true, false, pi);
             updateUsbMassStorageNotification(mUmsAvailable);
         } else if (newState.equals(Environment.MEDIA_UNMOUNTABLE)) {
             /*
@@ -204,7 +205,7 @@ public class StorageNotification extends StorageEventListener {
             setMediaStorageNotification(
                     com.android.internal.R.string.ext_media_unmountable_notification_title,
                     com.android.internal.R.string.ext_media_unmountable_notification_message,
-                    com.android.internal.R.drawable.stat_notify_sdcard_usb, true, false, pi); 
+                    ThemeIcons.ResourceID("stat_notify_sdcard_usb", com.android.internal.R.drawable.stat_notify_sdcard_usb), true, false, pi); 
             updateUsbMassStorageNotification(mUmsAvailable);
         } else if (newState.equals(Environment.MEDIA_REMOVED)) {
             /*
@@ -214,7 +215,7 @@ public class StorageNotification extends StorageEventListener {
             setMediaStorageNotification(
                     com.android.internal.R.string.ext_media_nomedia_notification_title,
                     com.android.internal.R.string.ext_media_nomedia_notification_message,
-                    com.android.internal.R.drawable.stat_notify_sdcard_usb,
+                    ThemeIcons.ResourceID("stat_notify_sdcard_usb", com.android.internal.R.drawable.stat_notify_sdcard_usb),
                     true, false, null);
             updateUsbMassStorageNotification(false);
         } else if (newState.equals(Environment.MEDIA_BAD_REMOVAL)) {
@@ -225,7 +226,7 @@ public class StorageNotification extends StorageEventListener {
             setMediaStorageNotification(
                     com.android.internal.R.string.ext_media_badremoval_notification_title,
                     com.android.internal.R.string.ext_media_badremoval_notification_message,
-                    com.android.internal.R.drawable.stat_sys_warning,
+                    ThemeIcons.ResourceID("stat_sys_warning", com.android.internal.R.drawable.stat_sys_warning),
                     true, true, null);
             updateUsbMassStorageNotification(false);
         } else {
@@ -252,7 +253,7 @@ public class StorageNotification extends StorageEventListener {
             setUsbStorageNotification(
                     com.android.internal.R.string.usb_storage_notification_title,
                     com.android.internal.R.string.usb_storage_notification_message,
-                    com.android.internal.R.drawable.stat_sys_data_usb,
+                    ThemeIcons.ResourceID("stat_sys_data_usb", com.android.internal.R.drawable.stat_sys_data_usb),
                     false, true, pi);
 
             if (POP_UMS_ACTIVITY_ON_CONNECT && !adbOn) {

@@ -23,7 +23,6 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-
 public class TrackingView extends LinearLayout {
     final Display mDisplay;
     StatusBarService mService;

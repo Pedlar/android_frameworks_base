@@ -24,6 +24,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ThemeIcons;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -443,13 +444,13 @@ class BatteryService extends Binder {
 
     private final int getIcon(int level) {
         if (mBatteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
-            return com.android.internal.R.drawable.stat_sys_battery_charge;
+            return ThemeIcons.ResourceID("stat_sys_battery_charge", com.android.internal.R.drawable.stat_sys_battery_charge);
         } else if (mBatteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING ||
                 mBatteryStatus == BatteryManager.BATTERY_STATUS_NOT_CHARGING ||
                 mBatteryStatus == BatteryManager.BATTERY_STATUS_FULL) {
-            return com.android.internal.R.drawable.stat_sys_battery;
+            return ThemeIcons.ResourceID("stat_sys_battery", com.android.internal.R.drawable.stat_sys_battery);
         } else {
-            return com.android.internal.R.drawable.stat_sys_battery_unknown;
+            return ThemeIcons.ResourceID("stat_sys_battery_unknown", com.android.internal.R.drawable.stat_sys_battery_unknown);
         }
     }
 

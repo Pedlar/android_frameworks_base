@@ -25,11 +25,17 @@ import android.bluetooth.BluetoothPbap;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
+import android.content.res.ThemeIcons;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -127,7 +133,7 @@ public class StatusBarPolicy {
     private IconData mPhoneDbmData;
 
     //GSM/UMTS
-    private static final int[] sSignalImages = new int[] {
+    private static int[] sSignalImages = new int[] {
         com.android.internal.R.drawable.stat_sys_signal_0,
         com.android.internal.R.drawable.stat_sys_signal_1,
         com.android.internal.R.drawable.stat_sys_signal_2,
@@ -136,7 +142,7 @@ public class StatusBarPolicy {
     };
     private static final int[] sSignalImages_r = new int[] {
         com.android.internal.R.drawable.stat_sys_r_signal_0,
-        com.android.internal.R.drawable.stat_sys_r_signal_1,
+	com.android.internal.R.drawable.stat_sys_r_signal_1,
         com.android.internal.R.drawable.stat_sys_r_signal_2,
         com.android.internal.R.drawable.stat_sys_r_signal_3,
         com.android.internal.R.drawable.stat_sys_r_signal_4
@@ -244,26 +250,26 @@ public class StatusBarPolicy {
     //***** Data connection icons
     private int[] mDataIconList = sDataNetType_g;
     //GSM/UMTS
-    private static final int[] sDataNetType_g = new int[] {
+    private static int[] sDataNetType_g = new int[] {
             com.android.internal.R.drawable.stat_sys_data_connected_g,
             com.android.internal.R.drawable.stat_sys_data_in_g,
             com.android.internal.R.drawable.stat_sys_data_out_g,
             com.android.internal.R.drawable.stat_sys_data_inandout_g,
         };
-    private static final int[] sDataNetType_3g = new int[] {
+    private static int[] sDataNetType_3g = new int[] {
             com.android.internal.R.drawable.stat_sys_data_connected_3g,
             com.android.internal.R.drawable.stat_sys_data_in_3g,
             com.android.internal.R.drawable.stat_sys_data_out_3g,
             com.android.internal.R.drawable.stat_sys_data_inandout_3g,
         };
-    private static final int[] sDataNetType_e = new int[] {
+    private static int[] sDataNetType_e = new int[] {
             com.android.internal.R.drawable.stat_sys_data_connected_e,
             com.android.internal.R.drawable.stat_sys_data_in_e,
             com.android.internal.R.drawable.stat_sys_data_out_e,
             com.android.internal.R.drawable.stat_sys_data_inandout_e,
         };
     //3.5G
-    private static final int[] sDataNetType_h = new int[] {
+    private static int[] sDataNetType_h = new int[] {
             com.android.internal.R.drawable.stat_sys_data_connected_h,
             com.android.internal.R.drawable.stat_sys_data_in_h,
             com.android.internal.R.drawable.stat_sys_data_out_h,
@@ -313,13 +319,13 @@ public class StatusBarPolicy {
     private boolean mBluetoothEnabled;
 
     // wifi
-    private static final int[] sWifiSignalImages = new int[] {
+    private static int[] sWifiSignalImages = new int[] {
             com.android.internal.R.drawable.stat_sys_wifi_signal_1,
             com.android.internal.R.drawable.stat_sys_wifi_signal_2,
             com.android.internal.R.drawable.stat_sys_wifi_signal_3,
             com.android.internal.R.drawable.stat_sys_wifi_signal_4,
         };
-    private static final int sWifiTemporarilyNotConnectedImage =
+    private static int sWifiTemporarilyNotConnectedImage =
             com.android.internal.R.drawable.stat_sys_wifi_signal_0;
 
     private int mLastWifiSignalLevel = -1;
@@ -351,6 +357,56 @@ public class StatusBarPolicy {
     // Cdma Roaming Indicator, ERI
     private IBinder mCdmaRoamingIndicatorIcon;
     private IconData mCdmaRoamingIndicatorIconData;
+    /* */
+    private void getSignalIcons() {
+        sSignalImages = new int[] {
+		ThemeIcons.ResourceID("stat_sys_signal_0", com.android.internal.R.drawable.stat_sys_signal_0),
+		ThemeIcons.ResourceID("stat_sys_signal_1", com.android.internal.R.drawable.stat_sys_signal_1),
+		ThemeIcons.ResourceID("stat_sys_signal_2", com.android.internal.R.drawable.stat_sys_signal_2),
+		ThemeIcons.ResourceID("stat_sys_signal_3", com.android.internal.R.drawable.stat_sys_signal_3),
+		ThemeIcons.ResourceID("stat_sys_signal_4", com.android.internal.R.drawable.stat_sys_signal_4),
+	};
+    }
+
+    private void getDataIcons() {
+                    sDataNetType_g = new int[] {
+                            ThemeIcons.ResourceID("stat_sys_data_connected_g", com.android.internal.R.drawable.stat_sys_data_connected_g),
+                            ThemeIcons.ResourceID("stat_sys_data_in_g", com.android.internal.R.drawable.stat_sys_data_in_g),
+                            ThemeIcons.ResourceID("stat_sys_data_out_g", com.android.internal.R.drawable.stat_sys_data_out_g),
+                            ThemeIcons.ResourceID("stat_sys_data_inandout_g", com.android.internal.R.drawable.stat_sys_data_inandout_g),
+                        };
+                    sDataNetType_3g = new int[] {
+                            ThemeIcons.ResourceID("stat_sys_data_connected_3g", com.android.internal.R.drawable.stat_sys_data_connected_3g),
+                            ThemeIcons.ResourceID("stat_sys_data_in_3g", com.android.internal.R.drawable.stat_sys_data_in_3g),
+                            ThemeIcons.ResourceID("stat_sys_data_out_3g", com.android.internal.R.drawable.stat_sys_data_out_3g),
+                            ThemeIcons.ResourceID("stat_sys_data_inandout_3g", com.android.internal.R.drawable.stat_sys_data_inandout_3g),
+                        };
+                    sDataNetType_e = new int[] {
+                            ThemeIcons.ResourceID("stat_sys_data_connected_e", com.android.internal.R.drawable.stat_sys_data_connected_e),
+                            ThemeIcons.ResourceID("stat_sys_data_in_e", com.android.internal.R.drawable.stat_sys_data_in_e),
+                            ThemeIcons.ResourceID("stat_sys_data_out_e", com.android.internal.R.drawable.stat_sys_data_out_e),
+                            ThemeIcons.ResourceID("stat_sys_data_inandout_e", com.android.internal.R.drawable.stat_sys_data_inandout_e),
+                        };
+                    //3.5G
+                    sDataNetType_h = new int[] {
+                            ThemeIcons.ResourceID("stat_sys_data_connected_h", com.android.internal.R.drawable.stat_sys_data_connected_h),
+                            ThemeIcons.ResourceID("stat_sys_data_in_h", com.android.internal.R.drawable.stat_sys_data_in_h),
+                            ThemeIcons.ResourceID("stat_sys_data_out_h", com.android.internal.R.drawable.stat_sys_data_out_h),
+                            ThemeIcons.ResourceID("stat_sys_data_inandout_h", com.android.internal.R.drawable.stat_sys_data_inandout_h),
+                        };
+
+    }
+
+    private void getWifiIcons() {
+	sWifiSignalImages = new int[] {
+            ThemeIcons.ResourceID("stat_sys_wifi_signal_1", com.android.internal.R.drawable.stat_sys_wifi_signal_1),
+            ThemeIcons.ResourceID("stat_sys_wifi_signal_2", com.android.internal.R.drawable.stat_sys_wifi_signal_2),
+            ThemeIcons.ResourceID("stat_sys_wifi_signal_3", com.android.internal.R.drawable.stat_sys_wifi_signal_3),
+            ThemeIcons.ResourceID("stat_sys_wifi_signal_4", com.android.internal.R.drawable.stat_sys_wifi_signal_4),
+        };
+    	sWifiTemporarilyNotConnectedImage =
+            ThemeIcons.ResourceID("stat_sys_wifi_signal_0", com.android.internal.R.drawable.stat_sys_wifi_signal_0);
+    }
 
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -428,6 +484,9 @@ public class StatusBarPolicy {
         mSignalStrength = new SignalStrength();
         mBatteryStats = BatteryStatsService.getService();
 
+	/* Get Signal Icon. */
+	getSignalIcons();
+
         // clock
         mCalendar = Calendar.getInstance(TimeZone.getDefault());
         mClockData = IconData.makeText("clock", "", Settings.System.CLOCK_COLOR, Settings.System.SHOW_STATUS_CLOCK, true);
@@ -457,8 +516,9 @@ public class StatusBarPolicy {
                 new com.android.server.status.StorageNotification(context));
 
         // battery
+	int mBatteryNull = ThemeIcons.ResourceID("stat_sys_battery_unknown", com.android.internal.R.drawable.stat_sys_battery_unknown);
         mBatteryData = IconData.makeIconNumber("battery",
-                null, com.android.internal.R.drawable.stat_sys_battery_unknown, 0, 0,
+                null, mBatteryNull, 0, 0,
                 Settings.System.BATTERY_PERCENTAGE_STATUS_COLOR);
         mBatteryIcon = service.addIcon(mBatteryData, null);
 
@@ -480,9 +540,10 @@ public class StatusBarPolicy {
                 coBattery);
 
         // phone_signal
+	int signalNull = ThemeIcons.ResourceID("stat_sys_signal_null", com.android.internal.R.drawable.stat_sys_signal_null);
         mPhone = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         mPhoneData = IconData.makeIcon("phone_signal",
-                null, com.android.internal.R.drawable.stat_sys_signal_null, 0, 0);
+                null, signalNull, 0, 0);
         mPhoneIcon = service.addIcon(mPhoneData, null);
 
         // dbm signal level
@@ -516,8 +577,9 @@ public class StatusBarPolicy {
                         | PhoneStateListener.LISTEN_DATA_ACTIVITY);
 
         // data_connection
+	int mDataNull = ThemeIcons.ResourceID("stat_sys_data_connected_g", com.android.internal.R.drawable.stat_sys_data_connected_g);
         mDataData = IconData.makeIcon("data_connection",
-                null, com.android.internal.R.drawable.stat_sys_data_connected_g, 0, 0);
+                null, mDataNull, 0, 0);
         mDataIcon = service.addIcon(mDataData, null);
         service.setIconVisibility(mDataIcon, false);
 
@@ -528,20 +590,23 @@ public class StatusBarPolicy {
         // wifi will get updated by the sticky intents
 
         // TTY status
+	int mTTYModeNull = ThemeIcons.ResourceID("stat_sys_tty_mode", com.android.internal.R.drawable.stat_sys_tty_mode);
         mTTYModeEnableIconData = IconData.makeIcon("tty",
-                null, com.android.internal.R.drawable.stat_sys_tty_mode, 0, 0);
+                null, mTTYModeNull, 0, 0);
         mTTYModeIcon = service.addIcon(mTTYModeEnableIconData, null);
         service.setIconVisibility(mTTYModeIcon, false);
 
         // Cdma Roaming Indicator, ERI
+	int mCdmaNull = ThemeIcons.ResourceID("stat_sys_roaming_cdma_0", com.android.internal.R.drawable.stat_sys_roaming_cdma_0);
         mCdmaRoamingIndicatorIconData = IconData.makeIcon("cdma_eri",
-                null, com.android.internal.R.drawable.stat_sys_roaming_cdma_0, 0, 0);
+                null, mCdmaNull, 0, 0);
         mCdmaRoamingIndicatorIcon = service.addIcon(mCdmaRoamingIndicatorIconData, null);
         service.setIconVisibility(mCdmaRoamingIndicatorIcon, false);
 
         // bluetooth status
+	int mBluetoothNull = ThemeIcons.ResourceID("stat_sys_data_bluetooth", com.android.internal.R.drawable.stat_sys_data_bluetooth);
         mBluetoothData = IconData.makeIcon("bluetooth",
-                null, com.android.internal.R.drawable.stat_sys_data_bluetooth, 0, 0);
+                null, mBluetoothNull, 0, 0);
         mBluetoothIcon = service.addIcon(mBluetoothData, null);
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter != null) {
@@ -555,10 +620,12 @@ public class StatusBarPolicy {
         mService.setIconVisibility(mBluetoothIcon, mBluetoothEnabled);
 
         // Gps status
+	int mGpsEnabledId = ThemeIcons.ResourceID("stat_sys_gps_acquiring_anim", com.android.internal.R.drawable.stat_sys_gps_acquiring_anim);
+	int mGpsOnId = ThemeIcons.ResourceID("stat_sys_gps_on", com.android.internal.R.drawable.stat_sys_gps_on);
         mGpsEnabledIconData = IconData.makeIcon("gps",
-                null, com.android.internal.R.drawable.stat_sys_gps_acquiring_anim, 0, 0);
+                null, mGpsEnabledId, 0, 0);
         mGpsFixIconData = IconData.makeIcon("gps",
-                null, com.android.internal.R.drawable.stat_sys_gps_on, 0, 0);
+                null, mGpsOnId, 0, 0);
         ContentResolver resolver = mContext.getContentResolver();
         String allowedProviders = Settings.Secure.getString(resolver,
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
@@ -569,23 +636,27 @@ public class StatusBarPolicy {
         }
 
         // Alarm clock
+	int mAlarmNull = ThemeIcons.ResourceID("stat_notify_alarm", com.android.internal.R.drawable.stat_notify_alarm);
         mAlarmClockIconData = IconData.makeIcon(
                 "alarm_clock",
-                null, com.android.internal.R.drawable.stat_notify_alarm, 0, 0);
+                null, mAlarmNull, 0, 0);
         mAlarmClockIcon = service.addIcon(mAlarmClockIconData, null);
         service.setIconVisibility(mAlarmClockIcon, false);
 
         // Sync state
+	int SyncActiveId = ThemeIcons.ResourceID("stat_notify_sync_anim0", R.drawable.stat_notify_sync_anim0);
+	int SyncFailId =ThemeIcons.ResourceID("stat_notify_sync_error", R.drawable.stat_notify_sync_error);
         mSyncActiveIcon = service.addIcon(IconData.makeIcon("sync_active",
-                null, R.drawable.stat_notify_sync_anim0, 0, 0), null);
+                null, SyncActiveId, 0, 0), null);
         mSyncFailingIcon = service.addIcon(IconData.makeIcon("sync_failing",
-                null, R.drawable.stat_notify_sync_error, 0, 0), null);
+                null, SyncFailId, 0, 0), null);
         service.setIconVisibility(mSyncActiveIcon, false);
         service.setIconVisibility(mSyncFailingIcon, false);
 
         // volume
+	int mVolumeSilent = ThemeIcons.ResourceID("stat_sys_ringer_silent", com.android.internal.R.drawable.stat_sys_ringer_silent);
         mVolumeData = IconData.makeIcon("volume",
-                null, com.android.internal.R.drawable.stat_sys_ringer_silent, 0, 0);
+                null, mVolumeSilent, 0, 0);
         mVolumeIcon = service.addIcon(mVolumeData, null);
         service.setIconVisibility(mVolumeIcon, false);
         updateVolume();
@@ -738,6 +809,9 @@ public class StatusBarPolicy {
     private final void updateBattery(Intent intent) {
         boolean plugged;
         int level;
+        mBatteryData.iconPackage = ThemeIcons.getPackage();
+        mBatteryData.iconId = intent.getIntExtra("icon-small", 0);
+        mBatteryData.iconLevel = intent.getIntExtra("level", 0);
 
         if(intent != null) {
             mBatteryData.iconId = intent.getIntExtra("icon-small", 0);
@@ -1092,6 +1166,7 @@ public class StatusBarPolicy {
         int iconLevel = -1;
         int dBm = 0;
         int[] iconList;
+	getSignalIcons();
 
         // Display signal strength while in "emergency calls only" mode
         if (!hasService() && mServiceState != null
@@ -1099,10 +1174,11 @@ public class StatusBarPolicy {
             //Slog.d(TAG, "updateSignalStrength: no service");
             if (Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.AIRPLANE_MODE_ON, 0) == 1) {
-                mPhoneData.iconId = com.android.internal.R.drawable.stat_sys_signal_flightmode;
+                mPhoneData.iconId = ThemeIcons.ResourceID("stat_sys_signal_flightmode", com.android.internal.R.drawable.stat_sys_signal_flightmode);
             } else {
-                mPhoneData.iconId = com.android.internal.R.drawable.stat_sys_signal_null;
+                mPhoneData.iconId = ThemeIcons.ResourceID("stat_sys_signal_null", com.android.internal.R.drawable.stat_sys_signal_null);
             }
+	    mPhoneData.iconPackage = ThemeIcons.getPackage();
             mService.updateIcon(mPhoneIcon, mPhoneData, null);
             mService.updateIcon(mPhoneDbmIcon, mPhoneDbmData, null);
             updateStrengthIcon();
@@ -1149,7 +1225,8 @@ public class StatusBarPolicy {
                 dBm = mSignalStrength.getCdmaDbm();
             }
         }
-        mPhoneData.iconId = iconList[iconLevel];
+        mPhoneData.iconPackage = ThemeIcons.getPackage();
+	mPhoneData.iconId = iconList[iconLevel];
         mService.updateIcon(mPhoneIcon, mPhoneData, null);
         mPhoneDbmData.text = Integer.toString(dBm);
         mService.updateIcon(mPhoneDbmIcon, mPhoneDbmData, null);
@@ -1200,6 +1277,7 @@ public class StatusBarPolicy {
     }
 
     private final void updateDataNetType(int net) {
+	getDataIcons();
 
         switch (net) {
         case TelephonyManager.NETWORK_TYPE_EDGE:
@@ -1236,6 +1314,7 @@ public class StatusBarPolicy {
 
     private final void updateDataIcon() {
         int iconId;
+	String themePackage = ThemeIcons.getPackage();
         boolean visible = true;
 
         if (!isCdma()) {
@@ -1256,13 +1335,15 @@ public class StatusBarPolicy {
                             iconId = mDataIconList[0];
                             break;
                     }
+		    mDataData.iconPackage = themePackage;
                     mDataData.iconId = iconId;
                     mService.updateIcon(mDataIcon, mDataData, null);
                 } else {
                     visible = false;
                 }
             } else {
-                mDataData.iconId = com.android.internal.R.drawable.stat_sys_no_sim;
+		mDataData.iconPackage = themePackage;
+                mDataData.iconId = ThemeIcons.ResourceID("stat_sys_no_sim", com.android.internal.R.drawable.stat_sys_no_sim);
                 mService.updateIcon(mDataIcon, mDataData, null);
             }
         } else {
@@ -1283,6 +1364,7 @@ public class StatusBarPolicy {
                         iconId = mDataIconList[0];
                         break;
                 }
+		mDataData.iconPackage = themePackage;
                 mDataData.iconId = iconId;
                 mService.updateIcon(mDataIcon, mDataData, null);
             } else {
@@ -1309,11 +1391,14 @@ public class StatusBarPolicy {
         final int ringerMode = audioManager.getRingerMode();
         final boolean visible = ringerMode == AudioManager.RINGER_MODE_SILENT ||
                 ringerMode == AudioManager.RINGER_MODE_VIBRATE;
+	int vVibrate = ThemeIcons.ResourceID("stat_sys_ringer_vibrate", com.android.internal.R.drawable.stat_sys_ringer_vibrate);
+	int vSilent = ThemeIcons.ResourceID("stat_sys_ringer_silent", com.android.internal.R.drawable.stat_sys_ringer_silent);
         final int iconId = (ringerMode == AudioManager.RINGER_MODE_VIBRATE)
-                ? com.android.internal.R.drawable.stat_sys_ringer_vibrate
-                : com.android.internal.R.drawable.stat_sys_ringer_silent;
+                ? vVibrate
+                : vSilent;
 
         if (visible) {
+	    mVolumeData.iconPackage = ThemeIcons.getPackage();
             mVolumeData.iconId = iconId;
             mService.updateIcon(mVolumeIcon, mVolumeData, null);
         }
@@ -1329,7 +1414,7 @@ public class StatusBarPolicy {
     }
 
     private final void updateBluetooth(Intent intent) {
-        int iconId = com.android.internal.R.drawable.stat_sys_data_bluetooth;
+        int iconId = ThemeIcons.ResourceID("stat_sys_data_bluetooth", com.android.internal.R.drawable.stat_sys_data_bluetooth);
         String action = intent.getAction();
         if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
@@ -1357,15 +1442,17 @@ public class StatusBarPolicy {
         if (mBluetoothHeadsetState == BluetoothHeadset.STATE_CONNECTED || mBluetoothA2dpConnected ||
                 mBluetoothHidState == BluetoothHid.STATE_CONNECTED ||
                 mBluetoothPbapState == BluetoothPbap.STATE_CONNECTED) {
-            iconId = com.android.internal.R.drawable.stat_sys_data_bluetooth_connected;
+            iconId = ThemeIcons.ResourceID("stat_sys_data_bluetooth_connected", com.android.internal.R.drawable.stat_sys_data_bluetooth_connected);
         }
 
+	mBluetoothData.iconPackage = ThemeIcons.getPackage();
         mBluetoothData.iconId = iconId;
         mService.updateIcon(mBluetoothIcon, mBluetoothData, null);
         mService.setIconVisibility(mBluetoothIcon, mBluetoothEnabled);
     }
 
     private final void updateWifi(Intent intent) {
+	getWifiIcons();
         final String action = intent.getAction();
         if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
 
@@ -1410,6 +1497,7 @@ public class StatusBarPolicy {
             }
 
             mWifiData.iconId = iconId;
+	    mWifiData.iconPackage = ThemeIcons.getPackage();
             mService.updateIcon(mWifiIcon, mWifiData, null);
         } else if (action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
             final int newRssi = intent.getIntExtra(WifiManager.EXTRA_NEW_RSSI, -200);
@@ -1422,6 +1510,7 @@ public class StatusBarPolicy {
                 } else {
                     mWifiData.iconId = sWifiTemporarilyNotConnectedImage;
                 }
+		mWifiData.iconPackage = ThemeIcons.getPackage();
                 mService.updateIcon(mWifiIcon, mWifiData, null);
             }
         }

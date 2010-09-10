@@ -32,6 +32,7 @@ import android.content.ContentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.IPackageManager;
+import android.content.res.ThemeIcons;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.media.AudioService;
@@ -103,6 +104,7 @@ class ServerThread extends Thread {
         RecognitionManagerService recognition = null;
         ThrottleService throttle = null;
         RingerSwitchObserver ringer = null;
+    	ThemeIcons tIcon = null;
 
         // Critical services...
         try {
@@ -144,6 +146,9 @@ class ServerThread extends Thread {
 
             Slog.i(TAG, "System Content Providers");
             ActivityManagerService.installSystemProviders();
+
+            Slog.i(TAG, "Theme Icon Service");
+            tIcon = new ThemeIcons(context);
 
             Slog.i(TAG, "Battery Service");
             battery = new BatteryService(context);

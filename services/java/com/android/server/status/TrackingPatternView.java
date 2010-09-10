@@ -19,6 +19,7 @@ package com.android.server.status;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.ThemeIcons;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Slog;

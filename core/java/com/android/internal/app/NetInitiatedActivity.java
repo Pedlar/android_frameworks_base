@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ThemeIcons;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -72,7 +73,7 @@ public class NetInitiatedActivity extends AlertActivity implements DialogInterfa
         // Set up the "dialog"
         final Intent intent = getIntent();
         final AlertController.AlertParams p = mAlertParams;
-        p.mIconId = com.android.internal.R.drawable.ic_dialog_usb;
+        p.mIconId = ThemeIcons.ResourceID("ic_dialog_usb", com.android.internal.R.drawable.ic_dialog_usb);
         p.mTitle = intent.getStringExtra(GpsNetInitiatedHandler.NI_INTENT_KEY_TITLE);
         p.mMessage = intent.getStringExtra(GpsNetInitiatedHandler.NI_INTENT_KEY_MESSAGE);
         p.mPositiveButtonText = BUTTON_TEXT_ACCEPT;
