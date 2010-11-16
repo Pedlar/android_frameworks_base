@@ -33,6 +33,11 @@ import android.provider.Settings;
 import android.telephony.ServiceState;
 import android.text.TextUtils;
 import android.util.Log;
+import android.content.Intent;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import com.android.internal.telephony.Phone;
 
 import com.android.internal.R;
 import com.android.internal.telephony.gsm.GsmDataConnection;
@@ -100,6 +105,8 @@ public abstract class PhoneBase extends Handler implements Phone {
     protected static final int EVENT_EMERGENCY_CALLBACK_MODE_ENTER  = 25;
     protected static final int EVENT_EXIT_EMERGENCY_CALLBACK_RESPONSE = 26;
 
+    private static final int MESSAGE_SET_PREFERRED_NETWORK_TYPE = 30;
+
     // Key used to read/write current CLIR setting
     public static final String CLIR_KEY = "clir_key";
 
@@ -158,7 +165,7 @@ public abstract class PhoneBase extends Handler implements Phone {
     protected Looper mLooper; /* to insure registrants are in correct thread*/
 
     protected Context mContext;
-
+    
     /**
      * PhoneNotifier is an abstraction for all system-wide
      * state change notification. DefaultPhoneNotifier is
@@ -170,6 +177,7 @@ public abstract class PhoneBase extends Handler implements Phone {
 
     boolean mUnitTestMode;
 
+    private ConnectivityBroadcastReceiver mReceiver;
     /**
      * Constructs a PhoneBase in normal (non-unit test) mode.
      *
@@ -196,7 +204,7 @@ public abstract class PhoneBase extends Handler implements Phone {
         this.mContext = context;
         mLooper = Looper.myLooper();
         mCM = ci;
-
+	mReceiver = new ConnectivityBroadcastReceiver();
         setPropertiesByCarrier();
 
         setUnitTestMode(unitTestMode);
@@ -265,6 +273,23 @@ public abstract class PhoneBase extends Handler implements Phone {
                     sendIncomingCallRingNotification(msg.arg1);
                 }
                 break;
+	    case MESSAGE_SET_PREFERRED_NETWORK_TYPE:
+
+		ConnectivityManager cm =
+                   (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		Log.d(LOG_TAG, "preferred NetworkType set upping Mobile Dataconnection");
+
+         	cm.setMobileDataEnabled(true);
+		//{PIAF
+ 	        //Intent intent = new Intent(PhoneToggler.MOBILE_DATA_CHANGED);
+                //intent.putExtra(PhoneToggler.NETWORK_MODE, true);
+                //mContext.sendBroadcast(intent);                
+                //PIAF}
+		AsyncResult.forMessage(mResponse, null, null);
+            	mResponse.sendToTarget();
+		mResponse = null;
+		break;
 
             default:
                 throw new RuntimeException("unexpected event not handled");
@@ -672,12 +697,74 @@ public abstract class PhoneBase extends Handler implements Phone {
     public void setCdmaSubscription(int cdmaSubscriptionType, Message response) {
         mCM.setCdmaSubscription(cdmaSubscriptionType, response);
     }
+	
+    private int mDesiredNetworkType;
+    private Message mResponse;
 
     /**
      *  Set the preferred Network Type: Global, CDMA only or GSM/UMTS only
      */
     public void setPreferredNetworkType(int networkType, Message response) {
-        mCM.setPreferredNetworkType(networkType, response);
+
+	 ConnectivityManager cm =
+                   (ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+	if(cm.getMobileDataEnabled())
+	{
+	    Log.d(LOG_TAG, "Mobile Dataconnection is online setting it down");
+	    
+	    mDesiredNetworkType = networkType;
+	    mResponse = response;
+            cm.setMobileDataEnabled(false);
+            //{PIAF
+            //Intent intent = new Intent(PhoneToggler.MOBILE_DATA_CHANGED);
+            //intent.putExtra(PhoneToggler.NETWORK_MODE, false);
+            //mContext.sendBroadcast(intent);                
+            //PIAF}
+	    startListening();
+	} else {
+	 mCM.setPreferredNetworkType(networkType, response);
+	}
+    }
+
+	public void startListening() {
+       	
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            mContext.registerReceiver(mReceiver, filter);            
+	
+	}
+
+	public synchronized void stopListening() {
+        
+            mContext.unregisterReceiver(mReceiver);            
+	
+        }
+
+
+	private class ConnectivityBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (!action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Log.w(LOG_TAG, "onReceived() called with " + intent);
+                return;
+            }
+
+            boolean noConnectivity =
+                intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+
+            if (noConnectivity) {
+		Log.w(LOG_TAG, "Mobile Dataconnection is now down setting preferred NetworkType");
+             	stopListening();
+		mCM.setPreferredNetworkType(mDesiredNetworkType, obtainMessage(MESSAGE_SET_PREFERRED_NETWORK_TYPE));
+		mDesiredNetworkType = -1;
+		
+            }           
+
+            
+        }
     }
 
     public void getPreferredNetworkType(Message response) {
