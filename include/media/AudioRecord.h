@@ -39,7 +39,7 @@ class AudioRecord
 {
 public:
 
-    static const int DEFAULT_SAMPLE_RATE = 44100;
+    static const int DEFAULT_SAMPLE_RATE = 8000;
 
     /* Events used by AudioRecord callback function (callback_t).
      *
