@@ -44,7 +44,7 @@ DefaultKeyedVector<int, audio_io_handle_t> AudioSystem::gStreamOutputMap(0);
 DefaultKeyedVector<audio_io_handle_t, AudioSystem::OutputDescriptor *> AudioSystem::gOutputs(0);
 
 // Cached values for recording queries
-uint32_t AudioSystem::gPrevInSamplingRate = 44100;
+uint32_t AudioSystem::gPrevInSamplingRate = 16000;
 int AudioSystem::gPrevInFormat = AudioSystem::PCM_16_BIT;
 int AudioSystem::gPrevInChannelCount = 1;
 size_t AudioSystem::gInBuffSize = 0;
