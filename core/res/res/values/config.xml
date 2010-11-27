@@ -57,7 +57,7 @@
         <item>"mobile,0,0,0"</item>
         <item>"mobile_mms,2,0,2"</item>
         <item>"mobile_supl,3,0,2"</item>
-        <item>"mobile_dun,4,0,4"</item>
+        <item>"mobile_hipri,5,0,3"</item>
     </string-array>
 
     <!-- This string array should be overridden by the device to present a list of radio
@@ -89,8 +89,6 @@
     <!-- Regex array of allowable upstream ifaces for tethering - for example if you want
          tethering on a new interface called "foo2" add <item>"foo\\d"</item> to the array -->
     <string-array translatable="false" name="config_tether_upstream_regexs">
-        <item>"pdp\\d"</item>
-        <item>"eth\\d"</item>
     </string-array>
 
     <!-- Boolean indicating if we require the use of DUN on mobile for tethering.
